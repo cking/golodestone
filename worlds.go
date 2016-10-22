@@ -31,7 +31,7 @@ const (
 )
 
 var (
-	// DataCenter Map of all Worlds and their status seperated by DataCenters
+	// DataCenter Map of all Worlds and their status separated by DataCenters
 	DataCenter DataCenterMap
 	// Worlds Map of all Worlds and their status
 	Worlds WorldStatusMap
