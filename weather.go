@@ -18,54 +18,191 @@ const (
 	// ClearWeather Clear weather
 	ClearWeather Weather = iota
 	// CloudyWeather Cloudy weather
-	CloudyWeather Weather = iota
+	CloudyWeather
 	// FairWeather Fair weather
-	FairWeather Weather = iota
+	FairWeather
 	// FoggyWeather Foggy weather
-	FoggyWeather Weather = iota
+	FoggyWeather
 	// RainyWeather Rain
-	RainyWeather Weather = iota
+	RainyWeather
 	// WindyWeather Windy weather
-	WindyWeather Weather = iota
+	WindyWeather
 	// ShowerWeather Rain shower
-	ShowerWeather Weather = iota
+	ShowerWeather
 	// GalesWeather Gale
-	GalesWeather Weather = iota
+	GalesWeather
 	// ThunderWeather Thunder
-	ThunderWeather Weather = iota
+	ThunderWeather
 	// ThunderstormWeather Thunderstorm
-	ThunderstormWeather Weather = iota
+	ThunderstormWeather
 	// HeatWaveWeather Heat waves
-	HeatWaveWeather Weather = iota
+	HeatWaveWeather
 	// GloomyWeather Gloomy weather
-	GloomyWeather Weather = iota
+	GloomyWeather
 	// SnowyWeather Snow
-	SnowyWeather Weather = iota
+	SnowyWeather
 	// BlizzardWeather Blizzards
-	BlizzardWeather Weather = iota
+	BlizzardWeather
 	// UmbralWindWeather Umbral winds
-	UmbralWindWeather Weather = iota
+	UmbralWindWeather
 	// DustStormWeather Dust storms
-	DustStormWeather Weather = iota
+	DustStormWeather
 	// UmbralStaticWeather Umbral statics
-	UmbralStaticWeather Weather = iota
+	UmbralStaticWeather
+)
+
+// Zone Type
+type Zone int
+
+const (
+	// UpperLaNosceaZone Upper La Noscea
+	UpperLaNosceaZone Zone = iota
+	// GridaniaZone Gridania
+	GridaniaZone
+	// CentralShroudZone Central Shroud
+	CentralShroudZone
+	// CoerthasWesternHighlandsZone Coerthas Western Highlands
+	CoerthasWesternHighlandsZone
+	// MistZone Mist
+	MistZone
+	// IshgardZone Ishgard
+	IshgardZone
+	// CoerthasCentralHighlandsZone Coerthas Western Highlands
+	CoerthasCentralHighlandsZone
+	// MorDhonaZone Mor Dhona
+	MorDhonaZone
+	// EasternThanalanZone Eastern Thanalan
+	EasternThanalanZone
+	// TheDravanianForelandsZone The Dravanian Forelands
+	TheDravanianForelandsZone
+	// LowerLaNosceaZone Lower La Noscea
+	LowerLaNosceaZone
+	// EasternLaNosceaZone Eastern La Noscea
+	EasternLaNosceaZone
+	// NorthShroudZone North Shroud Zone
+	NorthShroudZone
+	// WesternThanalanZone Western Thanalan
+	WesternThanalanZone
+	// EastShroudZone East Shroud
+	EastShroudZone
+	// CentralThanalanZone Central Thanalan
+	CentralThanalanZone
+	// AzysLlaZone Azys Lla
+	AzysLlaZone
+	// LimsaLominsaZone Limsa Lominsa
+	LimsaLominsaZone
+	// WesternLaNosceaZone Western La Noscea
+	WesternLaNosceaZone
+	// TheDravanianHinterlandsZone The Dravanian Hinterlands
+	TheDravanianHinterlandsZone
+	// IdyllshireZone Idyllshire
+	IdyllshireZone
+	// TheLavenderBedsZone The Lavender Beds
+	TheLavenderBedsZone
+	// UldahZone Ul'dah
+	UldahZone
+	// SouthShroudZone South Shroud
+	SouthShroudZone
+	// TheSeaofCloudsZone The Sea of Clouds
+	TheSeaofCloudsZone
+	// NorthernThanalanZone Northern Thanalan
+	NorthernThanalanZone
+	// SouthernThanalanZone Southern Thanalan
+	SouthernThanalanZone
+	// TheChurningMistsZone The Churning Mists
+	TheChurningMistsZone
+	// TheGobletZone The Goblet
+	TheGobletZone
+	// OuterLaNosceaZone Outer La Noscea
+	OuterLaNosceaZone
+	// MiddleLaNosceaZone Middle La Noscea
+	MiddleLaNosceaZone
 )
 
 var (
-	zoneMap    = weatherZoneMap()
-	weatherMap = weatherChanceMap()
+	weatherStringMap, stringWeatherMap = weatherTypeMap()
+	zoneStringMap, stringZoneMap       = weatherZoneMap()
+	weatherMap                         = weatherChanceMap()
 )
 
-func weatherZoneMap() map[string]string {
-	m := make(map[string]string)
-	m["uldah"] = "ul'dah"
-	m["azys la"] = "azys lla"
-	return m
+func weatherTypeMap() (map[Weather]string, map[string]Weather) {
+	m := make(map[Weather]string)
+
+	m[ClearWeather] = "Clear weather"
+	m[CloudyWeather] = "Cloudy weather"
+	m[FairWeather] = "Fair weather"
+	m[FoggyWeather] = "Foggy weather"
+	m[RainyWeather] = "Rain"
+	m[WindyWeather] = "Windy weather"
+	m[ShowerWeather] = "Rain shower"
+	m[GalesWeather] = "Gale"
+	m[ThunderWeather] = "Thunder"
+	m[ThunderstormWeather] = "Thunderstorm"
+	m[HeatWaveWeather] = "Heat waves"
+	m[GloomyWeather] = "Gloomy weather"
+	m[SnowyWeather] = "Snow"
+	m[BlizzardWeather] = "Blizzards"
+	m[UmbralWindWeather] = "Umbral winds"
+	m[DustStormWeather] = "Dust storms"
+	m[UmbralStaticWeather] = "Umbral statics"
+
+	n := make(map[string]Weather, len(m))
+	for k, v := range m {
+		n[v] = k
+	}
+
+	return m, n
 }
 
-func weatherChanceMap() map[string]weatherChanceFunction {
-	m := make(map[string]weatherChanceFunction)
-	m["limsa lominsa"] = createWeatherForecast(
+func weatherZoneMap() (map[Zone]string, map[string]Zone) {
+	m := make(map[Zone]string)
+
+	m[UpperLaNosceaZone] = "Upper La Noscea"
+	m[GridaniaZone] = "Gridania"
+	m[CentralShroudZone] = "Central Shroud"
+	m[CoerthasWesternHighlandsZone] = "Coerthas Western Highlands"
+	m[MistZone] = "Mist"
+	m[IshgardZone] = "Ishgard"
+	m[CoerthasCentralHighlandsZone] = "Coerthas Central Highlands"
+	m[MorDhonaZone] = "Mor Dhona"
+	m[EasternThanalanZone] = "Eastern Thanalan"
+	m[TheDravanianForelandsZone] = "The Dravanian Forelands"
+	m[LowerLaNosceaZone] = "Lower La Noscea"
+	m[EasternLaNosceaZone] = "Eastern La Noscea"
+	m[NorthShroudZone] = "North Shroud"
+	m[WesternThanalanZone] = "Western Thanalan"
+	m[EastShroudZone] = "East Shroud"
+	m[CentralThanalanZone] = "Central Thanalan"
+	m[AzysLlaZone] = "Azys Lla"
+	m[LimsaLominsaZone] = "Limsa Lominsa"
+	m[WesternLaNosceaZone] = "Western La Noscea"
+	m[TheDravanianHinterlandsZone] = "The Dravanian Hinterlands"
+	m[IdyllshireZone] = "Idyllshire"
+	m[TheLavenderBedsZone] = "The Lavender Beds"
+	m[UldahZone] = "Ul'dah"
+	m[SouthShroudZone] = "South Shroud"
+	m[TheSeaofCloudsZone] = "The Sea of Clouds"
+	m[NorthernThanalanZone] = "Northern Thanalan"
+	m[SouthernThanalanZone] = "Southern Thanalan"
+	m[TheChurningMistsZone] = "The Churning Mists"
+	m[TheGobletZone] = "The Goblet"
+	m[OuterLaNosceaZone] = "Outer La Noscea"
+	m[MiddleLaNosceaZone] = "Middle La Noscea"
+
+	n := make(map[string]Zone, len(m))
+	for k, v := range m {
+		n[v] = k
+	}
+
+	n["uldah"] = UldahZone
+	n["cch"] = CoerthasCentralHighlandsZone
+
+	return m, n
+}
+
+func weatherChanceMap() map[Zone]weatherChanceFunction {
+	m := make(map[Zone]weatherChanceFunction)
+	m[LimsaLominsaZone] = createWeatherForecast(
 		RainyWeather,
 		weatherForecastChance{20, CloudyWeather},
 		weatherForecastChance{50, ClearWeather},
@@ -73,7 +210,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{90, FoggyWeather},
 	)
 
-	m["middle la noscea"] = createWeatherForecast(
+	m[MiddleLaNosceaZone] = createWeatherForecast(
 		RainyWeather,
 		weatherForecastChance{20, CloudyWeather},
 		weatherForecastChance{50, ClearWeather},
@@ -82,7 +219,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{90, FoggyWeather},
 	)
 
-	m["lower la noscea"] = createWeatherForecast(
+	m[LowerLaNosceaZone] = createWeatherForecast(
 		RainyWeather,
 		weatherForecastChance{20, CloudyWeather},
 		weatherForecastChance{50, ClearWeather},
@@ -91,7 +228,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{90, FoggyWeather},
 	)
 
-	m["eastern la noscea"] = createWeatherForecast(
+	m[EasternLaNosceaZone] = createWeatherForecast(
 		ShowerWeather,
 		weatherForecastChance{5, FoggyWeather},
 		weatherForecastChance{50, ClearWeather},
@@ -100,7 +237,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{95, RainyWeather},
 	)
 
-	m["western la noscea"] = createWeatherForecast(
+	m[WesternLaNosceaZone] = createWeatherForecast(
 		GalesWeather,
 		weatherForecastChance{10, FoggyWeather},
 		weatherForecastChance{40, ClearWeather},
@@ -109,7 +246,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{90, WindyWeather},
 	)
 
-	m["upper la noscea"] = createWeatherForecast(
+	m[UpperLaNosceaZone] = createWeatherForecast(
 		ThunderstormWeather,
 		weatherForecastChance{30, ClearWeather},
 		weatherForecastChance{50, FairWeather},
@@ -118,7 +255,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{90, ThunderWeather},
 	)
 
-	m["outer la noscea"] = createWeatherForecast(
+	m[OuterLaNosceaZone] = createWeatherForecast(
 		RainyWeather,
 		weatherForecastChance{30, ClearWeather},
 		weatherForecastChance{50, FairWeather},
@@ -126,7 +263,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{85, FoggyWeather},
 	)
 
-	m["mist"] = createWeatherForecast(
+	m[MistZone] = createWeatherForecast(
 		RainyWeather,
 		weatherForecastChance{20, CloudyWeather},
 		weatherForecastChance{50, ClearWeather},
@@ -134,7 +271,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{90, FoggyWeather},
 	)
 
-	m["gridania"] = createWeatherForecast(
+	m[GridaniaZone] = createWeatherForecast(
 		FairWeather,
 		weatherForecastChance{20, RainyWeather},
 		weatherForecastChance{30, FoggyWeather},
@@ -143,17 +280,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{85, ClearWeather},
 	)
 
-	m["central shroud"] = createWeatherForecast(
-		FairWeather,
-		weatherForecastChance{5, ThunderWeather},
-		weatherForecastChance{20, RainyWeather},
-		weatherForecastChance{30, FoggyWeather},
-		weatherForecastChance{40, CloudyWeather},
-		weatherForecastChance{55, FairWeather},
-		weatherForecastChance{85, ClearWeather},
-	)
-
-	m["east shroud"] = createWeatherForecast(
+	m[CentralShroudZone] = createWeatherForecast(
 		FairWeather,
 		weatherForecastChance{5, ThunderWeather},
 		weatherForecastChance{20, RainyWeather},
@@ -163,7 +290,17 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{85, ClearWeather},
 	)
 
-	m["south shroud"] = createWeatherForecast(
+	m[EastShroudZone] = createWeatherForecast(
+		FairWeather,
+		weatherForecastChance{5, ThunderWeather},
+		weatherForecastChance{20, RainyWeather},
+		weatherForecastChance{30, FoggyWeather},
+		weatherForecastChance{40, CloudyWeather},
+		weatherForecastChance{55, FairWeather},
+		weatherForecastChance{85, ClearWeather},
+	)
+
+	m[SouthShroudZone] = createWeatherForecast(
 		ClearWeather,
 		weatherForecastChance{5, FoggyWeather},
 		weatherForecastChance{10, ThunderstormWeather},
@@ -173,7 +310,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{70, FairWeather},
 	)
 
-	m["north shroud"] = createWeatherForecast(
+	m[NorthShroudZone] = createWeatherForecast(
 		ClearWeather,
 		weatherForecastChance{5, FoggyWeather},
 		weatherForecastChance{10, ShowerWeather},
@@ -183,7 +320,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{70, FairWeather},
 	)
 
-	m["the lavender beds"] = createWeatherForecast(
+	m[TheLavenderBedsZone] = createWeatherForecast(
 		FairWeather,
 		weatherForecastChance{5, CloudyWeather},
 		weatherForecastChance{20, RainyWeather},
@@ -193,7 +330,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{85, ClearWeather},
 	)
 
-	m["ul'dah"] = createWeatherForecast(
+	m[UldahZone] = createWeatherForecast(
 		RainyWeather,
 		weatherForecastChance{40, ClearWeather},
 		weatherForecastChance{60, FairWeather},
@@ -201,7 +338,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{95, FoggyWeather},
 	)
 
-	m["western thanalan"] = createWeatherForecast(
+	m[WesternThanalanZone] = createWeatherForecast(
 		RainyWeather,
 		weatherForecastChance{40, ClearWeather},
 		weatherForecastChance{60, FairWeather},
@@ -209,7 +346,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{95, FoggyWeather},
 	)
 
-	m["central thanalan"] = createWeatherForecast(
+	m[CentralThanalanZone] = createWeatherForecast(
 		RainyWeather,
 		weatherForecastChance{15, DustStormWeather},
 		weatherForecastChance{55, ClearWeather},
@@ -218,7 +355,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{95, FoggyWeather},
 	)
 
-	m["eastern thanalan"] = createWeatherForecast(
+	m[EasternThanalanZone] = createWeatherForecast(
 		ShowerWeather,
 		weatherForecastChance{40, ClearWeather},
 		weatherForecastChance{60, FairWeather},
@@ -227,7 +364,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{85, RainyWeather},
 	)
 
-	m["southern thanalan"] = createWeatherForecast(
+	m[SouthernThanalanZone] = createWeatherForecast(
 		FoggyWeather,
 		weatherForecastChance{20, HeatWaveWeather},
 		weatherForecastChance{60, ClearWeather},
@@ -235,14 +372,14 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{90, CloudyWeather},
 	)
 
-	m["northern thanalan"] = createWeatherForecast(
+	m[NorthernThanalanZone] = createWeatherForecast(
 		FoggyWeather,
 		weatherForecastChance{5, ClearWeather},
 		weatherForecastChance{20, FairWeather},
 		weatherForecastChance{50, CloudyWeather},
 	)
 
-	m["the goblet"] = createWeatherForecast(
+	m[TheGobletZone] = createWeatherForecast(
 		RainyWeather,
 		weatherForecastChance{40, ClearWeather},
 		weatherForecastChance{60, FairWeather},
@@ -250,7 +387,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{95, FoggyWeather},
 	)
 
-	m["mor dhona"] = createWeatherForecast(
+	m[MorDhonaZone] = createWeatherForecast(
 		FairWeather,
 		weatherForecastChance{15, CloudyWeather},
 		weatherForecastChance{30, FoggyWeather},
@@ -258,7 +395,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{75, ClearWeather},
 	)
 
-	m["ishgard"] = createWeatherForecast(
+	m[IshgardZone] = createWeatherForecast(
 		FoggyWeather,
 		weatherForecastChance{60, SnowyWeather},
 		weatherForecastChance{70, FairWeather},
@@ -266,16 +403,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{90, CloudyWeather},
 	)
 
-	m["coerthas central highlands"] = createWeatherForecast(
-		FoggyWeather,
-		weatherForecastChance{20, BlizzardWeather},
-		weatherForecastChance{60, SnowyWeather},
-		weatherForecastChance{70, FairWeather},
-		weatherForecastChance{75, ClearWeather},
-		weatherForecastChance{90, CloudyWeather},
-	)
-
-	m["coerthas western highlands"] = createWeatherForecast(
+	m[CoerthasCentralHighlandsZone] = createWeatherForecast(
 		FoggyWeather,
 		weatherForecastChance{20, BlizzardWeather},
 		weatherForecastChance{60, SnowyWeather},
@@ -284,7 +412,16 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{90, CloudyWeather},
 	)
 
-	m["the sea of clouds"] = createWeatherForecast(
+	m[CoerthasWesternHighlandsZone] = createWeatherForecast(
+		FoggyWeather,
+		weatherForecastChance{20, BlizzardWeather},
+		weatherForecastChance{60, SnowyWeather},
+		weatherForecastChance{70, FairWeather},
+		weatherForecastChance{75, ClearWeather},
+		weatherForecastChance{90, CloudyWeather},
+	)
+
+	m[TheSeaofCloudsZone] = createWeatherForecast(
 		UmbralWindWeather,
 		weatherForecastChance{30, ClearWeather},
 		weatherForecastChance{60, FairWeather},
@@ -293,13 +430,13 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{90, WindyWeather},
 	)
 
-	m["azys lla"] = createWeatherForecast(
+	m[AzysLlaZone] = createWeatherForecast(
 		ThunderWeather,
 		weatherForecastChance{35, FairWeather},
 		weatherForecastChance{70, CloudyWeather},
 	)
 
-	m["the dravanian forelands"] = createWeatherForecast(
+	m[TheDravanianForelandsZone] = createWeatherForecast(
 		FairWeather,
 		weatherForecastChance{10, CloudyWeather},
 		weatherForecastChance{20, FoggyWeather},
@@ -308,7 +445,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{70, ClearWeather},
 	)
 
-	m["the dravanian hinterlands"] = createWeatherForecast(
+	m[TheDravanianHinterlandsZone] = createWeatherForecast(
 		FairWeather,
 		weatherForecastChance{10, CloudyWeather},
 		weatherForecastChance{20, FoggyWeather},
@@ -317,7 +454,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{70, ClearWeather},
 	)
 
-	m["the churning mists"] = createWeatherForecast(
+	m[TheChurningMistsZone] = createWeatherForecast(
 		FairWeather,
 		weatherForecastChance{10, CloudyWeather},
 		weatherForecastChance{20, GalesWeather},
@@ -325,7 +462,7 @@ func weatherChanceMap() map[string]weatherChanceFunction {
 		weatherForecastChance{70, ClearWeather},
 	)
 
-	m["idyllshire"] = createWeatherForecast(
+	m[IdyllshireZone] = createWeatherForecast(
 		FairWeather,
 		weatherForecastChance{10, CloudyWeather},
 		weatherForecastChance{20, FoggyWeather},
@@ -348,20 +485,39 @@ func weatherChance(timestamp time.Time) int {
 	return int(step2 % 100)
 }
 
+// GetCurrentWeatherByString Get the current weather for the specified `zone` where `zone` is string
+func GetCurrentWeatherByString(zone string) (Weather, error) {
+	id, found := stringZoneMap[zone]
+	if !found {
+		return 0, fmt.Errorf("zone `%v` not found", zone)
+	}
+
+	return GetWeather(Time(), id)
+}
+
 // GetCurrentWeather Get the current weather for the specified zone
-func GetCurrentWeather(zone string) (Weather, error) {
+func GetCurrentWeather(zone Zone) (Weather, error) {
+	_, found := zoneStringMap[zone]
+	if !found {
+		return 0, fmt.Errorf("zone `%v` not found", zone)
+	}
+
 	return GetWeather(Time(), zone)
 }
 
-// GetWeather Get the weather at `timestamp` for `zone`
-func GetWeather(timestamp time.Time, zone string) (Weather, error) {
-	_, ok := zoneMap[zone]
-	for ok {
-		zone = zoneMap[zone]
-		_, ok = zoneMap[zone]
+// GetWeatherByString Get the weather at `timestamp` for `zone` where `zone` is string
+func GetWeatherByString(timestamp time.Time, zone string) (Weather, error) {
+	id, found := stringZoneMap[zone]
+	if !found {
+		return 0, fmt.Errorf("zone `%v` not found", zone)
 	}
 
-	if _, ok = weatherMap[zone]; !ok {
+	return GetWeather(timestamp, id)
+}
+
+// GetWeather Get the weather at `timestamp` for Zone
+func GetWeather(timestamp time.Time, zone Zone) (Weather, error) {
+	if _, ok := weatherMap[zone]; !ok {
 		return 0, fmt.Errorf("zone `%v` not found", zone)
 	}
 
