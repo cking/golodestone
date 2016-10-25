@@ -2,9 +2,11 @@ package golodestone
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"regexp"
+	"strings"
 
 	"github.com/yhat/scrape"
 	"golang.org/x/net/html"
@@ -20,9 +22,21 @@ func BuildURL(path string) (string, error) {
 		return "", err
 	}
 
+	if urlParts.Host != "" {
+		if !strings.HasSuffix(urlParts.Host, "finalfantasyxiv.com") {
+			return "", fmt.Errorf("<%v> is an invalid Final Fantasy XIV host", urlParts.Host)
+		}
+
+		if !strings.HasPrefix(urlParts.Path, "/lodestone/") {
+			return "", fmt.Errorf("<%v> is an invalid Lodestone path (missing </lodestone/> prefix)", urlParts.Path)
+		}
+	} else {
+		urlParts.Path = reURLPath.ReplaceAllString(urlParts.Path, `/lodestone/$2`)
+	}
+
 	urlParts.Scheme = "http"
 	urlParts.Host = "eu.finalfantasyxiv.com"
-	urlParts.Path = reURLPath.ReplaceAllString(urlParts.Path, `/lodestone/$2`)
+
 	return urlParts.String(), nil
 }
 
