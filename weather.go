@@ -18,37 +18,37 @@ const (
 	// ClearWeather Clear weather
 	ClearWeather Weather = iota
 	// CloudyWeather Cloudy weather
-	CloudyWeather Weather = iota
+	CloudyWeather
 	// FairWeather Fair weather
-	FairWeather Weather = iota
+	FairWeather
 	// FoggyWeather Foggy weather
-	FoggyWeather Weather = iota
+	FoggyWeather
 	// RainyWeather Rain
-	RainyWeather Weather = iota
+	RainyWeather
 	// WindyWeather Windy weather
-	WindyWeather Weather = iota
+	WindyWeather
 	// ShowerWeather Rain shower
-	ShowerWeather Weather = iota
+	ShowerWeather
 	// GalesWeather Gale
-	GalesWeather Weather = iota
+	GalesWeather
 	// ThunderWeather Thunder
-	ThunderWeather Weather = iota
+	ThunderWeather
 	// ThunderstormWeather Thunderstorm
-	ThunderstormWeather Weather = iota
+	ThunderstormWeather
 	// HeatWaveWeather Heat waves
-	HeatWaveWeather Weather = iota
+	HeatWaveWeather
 	// GloomyWeather Gloomy weather
-	GloomyWeather Weather = iota
+	GloomyWeather
 	// SnowyWeather Snow
-	SnowyWeather Weather = iota
+	SnowyWeather
 	// BlizzardWeather Blizzards
-	BlizzardWeather Weather = iota
+	BlizzardWeather
 	// UmbralWindWeather Umbral winds
-	UmbralWindWeather Weather = iota
+	UmbralWindWeather
 	// DustStormWeather Dust storms
-	DustStormWeather Weather = iota
+	DustStormWeather
 	// UmbralStaticWeather Umbral statics
-	UmbralStaticWeather Weather = iota
+	UmbralStaticWeather
 )
 
 var (
