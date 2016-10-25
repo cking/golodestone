@@ -525,6 +525,16 @@ func GetWeather(timestamp time.Time, zone Zone) (Weather, error) {
 	return weatherMap[zone](chance), nil
 }
 
+// WeatherToString Translates Weather to a string
+func WeatherToString(weather Weather) (string, error) {
+	name, found := weatherStringMap[weather]
+	if !found {
+		return "", fmt.Errorf("weather `%v` not found", weather)
+	}
+
+	return name, nil
+}
+
 func createWeatherForecast(defaultWeather Weather, weathers ...weatherForecastChance) func(int) Weather {
 	return func(chance int) Weather {
 		for _, forecastChance := range weathers {
