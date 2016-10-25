@@ -5,6 +5,7 @@ golodestone
 [![Go report](http://goreportcard.com/badge/cking/golodestone)](http://goreportcard.com/report/cking/golodestone)
 [![MS-PL License](https://img.shields.io/github/license/cking/golodestone.svg)](https://github/cking/golodestone/blob/master/LICENSE)
 [![Build status](https://img.shields.io/travis/cking/golodestone.svg)](https://travis-ci.org/cking/golodestone)
+[![Code Coverage](https://img.shields.io/codecov/c/github/cking/golodestone.svg)](https://codecov.io/gh/cking/golodestone)
 
 golodestone is an API to interface with Final Fantasy XIV Lodestone. It fetches the required data by scraping the official Lodestone pages.
 
