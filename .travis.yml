@@ -1,0 +1,15 @@
+language: go
+go:
+    - 1.6
+    - tip
+install:
+    - go get github.com/cking/golodestone
+    - go get -v .
+    - go get -v github.com/golang/lint/golint
+script:
+    - diff <(gofmt -d .) <(echo -n)
+    - go vet -x ./...
+    - golint ./...
+    - go test -v -race ./...
+after_success:
+    - bash <(curl -s https://codecov.io/bash)
