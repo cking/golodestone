@@ -9,8 +9,16 @@ import (
 
 var _ = Describe("Util", func() {
 	Describe("The url generator", func() {
+		It("should fail on malformed urls", func() {
+			_, err := BuildURL("not%avalid#url#to parse")
+			Expect(err).To(HaveOccurred())
+		})
 		It("should fail on non-lodestone URLs", func() {
 			_, err := BuildURL("http://google.de/something")
+			Expect(err).To(HaveOccurred())
+		})
+		It("should fail to generate a valid URL, even if a valid hostname is given", func() {
+			_, err := BuildURL("http://na.finalfantasyxiv.com/worldstatus")
 			Expect(err).To(HaveOccurred())
 		})
 		It("should create a european lodestone URL", func() {
