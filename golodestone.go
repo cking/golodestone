@@ -1,7 +1,6 @@
 package golodestone
 
 import (
-	"math"
 	"time"
 
 	"github.com/cking/x/xmath"
@@ -69,6 +68,8 @@ func GetGrandCompanyResetFrom(from time.Time) time.Time {
 }
 
 func calculateResetTime(now time.Time, every, offset int64) time.Time {
-	end := int64(math.Floor(float64((now.UTC().Unix()-offset)/every))+1)*every + offset
-	return time.Unix(end, 0)
+	base := now.UTC().Unix() - offset
+	nextStep := base/every + 1
+	resetTime := nextStep*every + offset
+	return time.Unix(resetTime, 0)
 }
