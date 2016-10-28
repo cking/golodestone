@@ -42,4 +42,23 @@ var _ = Describe("Util", func() {
 			Expect(url).To(HavePrefix("http://eu.finalfantasyxiv.com/lodestone/"))
 		})
 	})
+
+	Describe("The scraper", func() {
+		It("should fail on non-lodestone links", func() {
+			_, err := QueryLodestone("http://example.com")
+			Expect(err).To(HaveOccurred())
+		})
+
+		PIt("should fail on unfetchable requests")
+		PIt("should fail on non-html pages")
+
+		It("should fail on unexpected page layout", func() {
+			_, err := QueryLodestone("not-existing-url-lalala")
+			Expect(err).To(HaveOccurred())
+		})
+		It("should return a valid html-node", func() {
+			_, err := QueryLodestone("worldstatus")
+			Expect(err).To(Succeed())
+		})
+	})
 })
