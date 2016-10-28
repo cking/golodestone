@@ -7,6 +7,25 @@ import (
 )
 
 const eorzeaMultiplier float64 = 3600.0 / 175
+const day = 60 * 60 * 24
+
+type resetDefinition struct {
+	offset   time.Duration
+	stepSize int64
+}
+
+// Resets holds all reset times
+type Resets struct {
+	Daily        time.Time
+	GrandCompany time.Time
+	Weekly       time.Time
+	Scrip        time.Time
+}
+
+var dailyReset = resetDefinition{time.Hour * 15, day}
+var grandCompanyReset = resetDefinition{time.Hour * 20, day}
+var weeklyReset = resetDefinition{time.Hour * (5*24 + 8), day * 7}
+var scripReset = resetDefinition{time.Hour * 8, day * 7}
 
 // Time Gets the time from Eorzea
 func Time() time.Time {
@@ -15,61 +34,19 @@ func Time() time.Time {
 	return time.Unix(eorzeaTicks, 0).UTC()
 }
 
-const weeklyResetEvery = 7 * 24 * 60 * 60
-const weeklyResetOffset = (5*24 + 8) * 60 * 60
-
-// GetWeeklyReset Gets the time of the next weekly reset.
-func GetWeeklyReset() time.Time {
-	return GetWeeklyResetFrom(time.Now())
+// GetResets returns all resets for the current time
+func GetResets() *Resets {
+	return GetResetsFrom(time.Now())
 }
 
-// GetWeeklyResetFrom Gets the time of the next weekly reset based on `from` time.Time
-func GetWeeklyResetFrom(from time.Time) time.Time {
-	return calculateResetTime(from, weeklyResetEvery, weeklyResetOffset)
+// GetResetsFrom returns all resets for the given time
+func GetResetsFrom(from time.Time) *Resets {
+	return &Resets{calculateResetTime(from, dailyReset), calculateResetTime(from, grandCompanyReset), calculateResetTime(from, weeklyReset), calculateResetTime(from, scripReset)}
 }
 
-const dailyResetEvery = 24 * 60 * 60
-const dailyResetOffset = 15 * 60 * 60
-
-// GetDailyReset Gets the time of the next daily reset.
-func GetDailyReset() time.Time {
-	return GetDailyResetFrom(time.Now())
-}
-
-// GetDailyResetFrom Gets the time of the next daily reset based on `from` time.Time
-func GetDailyResetFrom(from time.Time) time.Time {
-	return calculateResetTime(from, dailyResetEvery, dailyResetOffset)
-}
-
-const craftingScriptsResetEvery = 7 * 24 * 60 * 60
-const craftingScriptsResetOffset = 8 * 60 * 60
-
-// GetCraftingScripsReset Gets the time of the next crafting scrips reset.
-func GetCraftingScripsReset() time.Time {
-	return GetCraftingScripsResetFrom(time.Now())
-}
-
-// GetCraftingScripsResetFrom Gets the time of the next crafting scrips reset based on `from` time.Time
-func GetCraftingScripsResetFrom(from time.Time) time.Time {
-	return calculateResetTime(from, craftingScriptsResetEvery, craftingScriptsResetOffset)
-}
-
-const grandCompanyResetEvery = 24 * 60 * 60
-const grandCompanyResetOffset = 20 * 60 * 60
-
-// GetGrandCompanyReset Gets the time of the next grand company reset.
-func GetGrandCompanyReset() time.Time {
-	return GetGrandCompanyResetFrom(time.Now())
-}
-
-// GetGrandCompanyResetFrom Gets the time of the next grand company reset based on `from` time.Time
-func GetGrandCompanyResetFrom(from time.Time) time.Time {
-	return calculateResetTime(from, grandCompanyResetEvery, grandCompanyResetOffset)
-}
-
-func calculateResetTime(now time.Time, every, offset int64) time.Time {
-	base := now.UTC().Unix() - offset
-	nextStep := base/every + 1
-	resetTime := nextStep*every + offset
-	return time.Unix(resetTime, 0)
+func calculateResetTime(now time.Time, reset resetDefinition) time.Time {
+	base := now.UTC().Add(-reset.offset).Unix()
+	nextStep := base/reset.stepSize + 1
+	resetTime := nextStep * reset.stepSize
+	return time.Unix(resetTime, 0).Add(reset.offset)
 }

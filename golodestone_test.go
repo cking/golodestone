@@ -10,22 +10,23 @@ import (
 )
 
 var _ = Describe("Golodestone", func() {
-	Describe("Timer Resets", func() {
-		It("should succeed when Weekly Reset is equal to 1477987200 for 1477435800", func() {
-			reset := GetWeeklyResetFrom(time.Unix(1477435800, 0))
-			Expect(reset.Unix()).To(Equal(int64(1477987200)))
-		})
-		It("should succeed when Daily Reset is equal to 1477494000 for 1477435800", func() {
-			reset := GetDailyResetFrom(time.Unix(1477435800, 0))
-			Expect(reset.Unix()).To(Equal(int64(1477494000)))
-		})
-		It("should succeed when Crafting Scrips Reset is equal to 1477555200 for 1477435800", func() {
-			reset := GetCraftingScripsResetFrom(time.Unix(1477435800, 0))
-			Expect(reset.Unix()).To(Equal(int64(1477555200)))
-		})
-		It("should succeed when Grand Company Reset is equal to 1477512000 for 1477435800", func() {
-			reset := GetGrandCompanyResetFrom(time.Unix(1477435800, 0))
-			Expect(reset.Unix()).To(Equal(int64(1477512000)))
+	Describe("Resettimes", func() {
+		Context("with the time set to 2016-10-25 22:50:00 UTC", func() {
+			from := time.Unix(1477435800, 0)
+			resets := GetResetsFrom(from)
+			zone, _ := time.LoadLocation("")
+			It("should return the expected daily reset 2016-10-26 15:00:00 UTC", func() {
+				Expect(resets.Daily).To(BeTemporally("==", time.Date(2016, 10, 26, 15, 0, 0, 0, zone)))
+			})
+			It("should return the expected grand company reset 2016-10-26 20:00:00 UTC", func() {
+				Expect(resets.GrandCompany).To(BeTemporally("==", time.Date(2016, 10, 26, 20, 0, 0, 0, zone)))
+			})
+			It("should return the expected weekly reset 2016-11-01 08:00:00 UTC", func() {
+				Expect(resets.Weekly).To(BeTemporally("==", time.Date(2016, 11, 01, 8, 0, 0, 0, zone)))
+			})
+			It("should return the expected scrip reset 2016-10-27 08:00:00 UTC", func() {
+				Expect(resets.Scrip).To(BeTemporally("==", time.Date(2016, 10, 27, 8, 0, 0, 0, zone)))
+			})
 		})
 	})
 })
